@@ -1,6 +1,6 @@
 {
     "name": "thoughtful-web/activation-requirements-wp",
-    "description": "Helpful WordPress email logging released as free open source software under GNU GPL-2.0+ License",
+    "description": "Helpful WordPress activation requirements released as free open source software under GNU GPL-2.0+ License",
 	"version": "0.1.0",
     "type": "library",
 	"keywords": ["WordPress"],
