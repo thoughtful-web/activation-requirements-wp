@@ -61,20 +61,19 @@ class Plugins {
 	 * @return array
 	 */
 	public function __construct( $plugin_clause ) {
-
+		error_log(serialize($plugin_clause));
 		// Results structure for this class's sole public function.
 		$results = $this->query_results;
 
 		// Enforce a default value of 'AND' for $relation.
-		if ( isset( $plugin_clause['relation'] ) && 'OR' === strtoupper( $plugin_clause['relation'] ) ) {
-			$relation = 'OR';
-		} else {
-			$relation = 'AND';
-		}
 		if ( isset( $plugin_clause['relation'] ) ) {
+			if ( 'OR' === strtoupper( $plugin_clause['relation'] ) ) {
+				$relation = 'OR';
+			} else {
+				$relation = 'AND';
+			}
 			unset( $plugin_clause['relation'] );
 		}
-
 		// Retrieve plugin active status.
 		foreach ( $plugin_clause as $key => $plugin ) {
 			// Get active status.
@@ -83,9 +82,9 @@ class Plugins {
 			$plugin_clause[ $key ]['active'] = $active;
 			// Assign active or inactive plugins to their own results.
 			if ( $active ) {
-				$results['active'] = $plugin;
+				$results['active'][] = $plugin;
 			} else {
-				$results['inactive'] = $plugin;
+				$results['inactive'][] = $plugin;
 			}
 		}
 		$results['status'] = $plugin_clause;
@@ -133,14 +132,18 @@ class Plugins {
 		 */
 		if ( 0 < count( $results['notify'] ) ) {
 
-			$notify_plugins_phrase   = '';
-			$plural                  = 'OR' === $relation ? 1 : count( $results['notify'] );
+			$notify_plugins_phrase = '';
+			$plural                = 'OR' === $relation ? 1 : count( $results['notify'] );
+			$plugin_names          = array();
+			foreach ( $results['notify'] as $plugin ) {
+				$plugin_names[] = $plugin['name'];
+			}
 
 			if ( 2 >= $plural ) {
-				$notify_plugins_phrase = implode( strtolower( " $relation " ), $results['inactive'] );
+				$notify_plugins_phrase = implode( strtolower( " $relation " ), $plugin_names );
 			} else {
-				$plugin_last            = array_pop( $results['notify'] );
-				$notify_plugins_phrase  = implode( ', ', $results['notify'] );
+				$plugin_last            = array_pop( $plugin_names );
+				$notify_plugins_phrase  = implode( ', ', $plugin_names );
 				$notify_plugins_phrase .= strtolower( ", $relation " ) . $plugin_last;
 			}
 

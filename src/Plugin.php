@@ -94,12 +94,7 @@ class Plugin {
 
 		// Handle result.
 		if ( empty( $this->plugin_query_results['passed'] ) ) {
-
 			$this->deactivate_plugin();
-
-			// Alert the user to the issue.
-			add_action( 'admin_notices', array( $this, 'show_admin_error' ) );
-
 		}
 
 	}
@@ -118,19 +113,21 @@ class Plugin {
 
 		// Deactivate the plugin in a multisite-friendly way.
 		$plugin_base = plugin_basename( $this->root_plugin_path );
-		error_log($this->root_plugin_path);
-		error_log($plugin_base);
 
 		if ( ! is_multisite() ) {
-			error_log('deactivating ' . __LINE__);
 			deactivate_plugins( $plugin_base );
 		} elseif ( is_network_admin() && is_plugin_active_for_network( $this->root_plugin_path ) ) {
-			error_log('deactivating ' . __LINE__);
 			deactivate_plugins( $plugin_base, false, true );
 		} else {
-			error_log('deactivating ' . __LINE__);
 			deactivate_plugins( $plugin_base, false, false );
 		}
+		wp_die(
+			$this->get_error_message(),
+			'Plugin Activation Error',
+			array(
+				'back_link' => true,
+			)
+		);
 
 	}
 
@@ -141,27 +138,19 @@ class Plugin {
 	 *
 	 * @return void
 	 */
-	public function show_admin_error() {
+	public function get_error_message() {
 
-		$class         = 'notice notice-error is-dismissible';
-		$message_pre   =
-		$message_str   = sprintf(
-			/* translators: %s: Name or names of the plugins which did not meet requirements. */
-			__( 'The plugin could not be activated. Install and activate the %s plugin(s) first and then activate this plugin again.', 'thoughtful-web-library-wp' ),
+		$plugin_data = get_plugin_data( $this->root_plugin_path );
+		$message_output = sprintf(
+			/* translators: %1$s: The name of the deactivated plugin. %2$s: Name or names of the plugins which did not meet requirements. */
+			__( '<h1>The %1$s plugin could not be activated.</h1><p>Install and activate the %2$s plugin(s) first.</p>', 'thoughtful-web-library-wp' ),
+			esc_html( $plugin_data['Name'] ),
 			esc_html( $this->plugin_query_results['message'] )
 		);
 
-		// Display the notice element.
-		$message_output = sprintf(
-			/* translators: 1: The notice element class 2: The full notice message */
-			'<div class="%1$s"><p>%2$s</p></div>',
-			esc_attr( $class ),
-			esc_html( $message_str )
-		);
+		$message_output = apply_filters( 'twar_activation_error', $message_output );
 
-		$message_output = apply_filters( 'twpl_activation_requirement_error', $message_output );
-
-		echo wp_kses_post( $message_output );
+		return $message_output;
 
 	}
 }
