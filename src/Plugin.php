@@ -4,33 +4,28 @@
  *
  * Links to PHP core documentation are included but this file will not be easy to grasp for beginners.
  *
- * @package    ThoughtfulWeb\LibraryWP
- * @subpackage Plugin
+ * @package    ThoughtfulWeb\ActivationRequirementsWP
+ * @subpackage Require
  * @author     Zachary Kendall Watkins <watkinza@gmail.com>
  * @copyright  Zachary Kendall Watkins 2022
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0-or-later
- * @link       https://github.com/zachwatkins/wordpress-plugin-name/blob/master/util/class-activation.php
+ * @link       https://github.com/thoughtful-web/pluginactivationwp/blob/master/src/Plugin.php
  * @since      0.1.0
  */
 
 declare(strict_types=1);
-namespace ThoughtfulWeb\LibraryWP\Plugin\Activation;
+namespace ThoughtfulWeb\ActivationRequirementsWP;
 
-use \ThoughtfulWeb\LibraryWP\Plugin\Query;
+use \ThoughtfulWeb\ActivationRequirementsWP\Query\Plugins;
+use \ThoughtfulWeb\ActivationRequirementsWP\Config;
 
 /**
- * The class that handles plugin activation and deactivation.
+ * The class that handles plugin activation requirements.
  *
- * @see   https://www.php.net/manual/en/language.oop5.basic.php
  * @since 0.1.0
  */
-class Requirements {
+class Plugin {
 
-	/**
-	 * The main plugin file.
-	 *
-	 * @var string $root_plugin_path
-	 */
 	private $root_plugin_path;
 
 	/**
@@ -73,11 +68,13 @@ class Requirements {
 	 *
 	 * @return void
 	 */
-	public function __construct( $root_plugin_path, $plugin_clause ) {
+	public function __construct( $root_plugin_path, $config = array() ) {
 
 		$this->root_plugin_path = $root_plugin_path;
-		$this->plugin_clause    = $plugin_clause;
 
+		// Store attributes from the compiled parameters.
+		$config_obj = new \ThoughtfulWeb\ActivationRequirementsWP\Config( $config );
+		$this->plugin_clause = $config_obj->get('plugins');
 		// Register activation hook.
 		register_activation_hook( $root_plugin_path, array( $this, 'activate_plugin' ) );
 
@@ -92,11 +89,11 @@ class Requirements {
 	 */
 	public function activate_plugin() {
 
-		$plugin_query               =( $this->plugin_clause );
+		$plugin_query               = new \ThoughtfulWeb\ActivationRequirementsWP\Query\Plugins( $this->plugin_clause );
 		$this->plugin_query_results = $plugin_query->results();
 
 		// Handle result.
-		if ( ! $this->plugin_query_results['passed'] ) {
+		if ( empty( $this->plugin_query_results['passed'] ) ) {
 
 			$this->deactivate_plugin();
 
@@ -120,12 +117,19 @@ class Requirements {
 	public function deactivate_plugin() {
 
 		// Deactivate the plugin in a multisite-friendly way.
+		$plugin_base = plugin_basename( $this->root_plugin_path );
+		error_log($this->root_plugin_path);
+		error_log($plugin_base);
+
 		if ( ! is_multisite() ) {
-			deactivate_plugins( $this->root_plugin_path );
+			error_log('deactivating ' . __LINE__);
+			deactivate_plugins( $plugin_base );
 		} elseif ( is_network_admin() && is_plugin_active_for_network( $this->root_plugin_path ) ) {
-			deactivate_plugins( $this->root_plugin_path, false, true );
+			error_log('deactivating ' . __LINE__);
+			deactivate_plugins( $plugin_base, false, true );
 		} else {
-			deactivate_plugins( $this->root_plugin_path, false, false );
+			error_log('deactivating ' . __LINE__);
+			deactivate_plugins( $plugin_base, false, false );
 		}
 
 	}

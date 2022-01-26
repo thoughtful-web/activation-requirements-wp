@@ -1,9 +1,8 @@
 {
     "name": "thoughtful-web/activation-requirements-wp",
     "description": "Helpful WordPress activation requirements released as free open source software under GNU GPL-2.0+ License",
-	"version": "0.1.0",
     "type": "library",
-	"keywords": ["WordPress"],
+	"keywords": ["wordpress", "plugin", "activation"],
 	"require": {
 		"php": ">=7.3.5"
 	},
@@ -33,10 +32,9 @@
 	},
 	"readme": "README.md",
 	"autoload": {
-        "classmap": ["src/"]
-	},
-	"config": {
-		"classmap-authoritative": true
+        "psr-4": {
+			"ThoughtfulWeb\\ActivationRequirementsWP\\": "src/"
+		}
 	},
 	"scripts": {}
 }

@@ -6,25 +6,24 @@
  * Inspired by the meta_query parameter of WP_Meta_Query().
  * https://developer.wordpress.org/reference/classes/wp_meta_query/
  *
- * @package    ThoughtfulWeb\LibraryWP
- * @subpackage Plugin
+ * @package    ThoughtfulWeb\ActivationRequirements
+ * @subpackage Query
  * @author     Zachary Kendall Watkins <watkinza@gmail.com>
  * @copyright  Zachary Kendall Watkins 2022
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0-or-later
- * @link       https://github.com/thoughtful-web/library-wp/blob/master/src/plugin/query.php
+ * @link       https://github.com/thoughtful-web/activation-requirements-wp/blob/master/src/Query/Plugins.php
  * @since      0.1.0
  */
 
 declare(strict_types=1);
-namespace ThoughtfulWeb\LibraryWP\Plugin;
+namespace ThoughtfulWeb\ActivationRequirementsWP\Query;
 
 /**
  * The class that validates configuration requirements.
  *
- * @see   https://www.php.net/manual/en/language.oop5.basic.php
  * @since 0.1.0
  */
-class Query {
+class Plugins {
 
 	/**
 	 * Query results.
@@ -45,7 +44,7 @@ class Query {
 	 *
 	 * @since  0.1.0
 	 *
-	 * @param array|string $plugin_clause {
+	 * @param array $plugin_clause {
 	 *     The details for plugins which may or may not be present and/or active on the site.
 	 *
 	 *     @type string $relation Optional. The keyword used to compare the activation status of the
@@ -62,10 +61,6 @@ class Query {
 	 * @return array
 	 */
 	public function __construct( $plugin_clause ) {
-
-		if ( is_string( $plugin_clause ) ) {
-			$plugin_clause = include $plugin_clause;
-		}
 
 		// Results structure for this class's sole public function.
 		$results = $this->query_results;
