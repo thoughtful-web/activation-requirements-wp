@@ -104,18 +104,18 @@ Documentation for this library is a work in progress. Some documentation for cre
 <?php
 // For security.
 if ( ! defined( 'ABSPATH' ) ) {
-	http_response_code( 404 );
-	?><html><head><title>HTTP 404 Not Found</title></head><body><p>The requested page does not exist.</p></body></html>
-	<?php
-	die();
+    http_response_code( 404 );
+    ?><html><head><title>HTTP 404 Not Found</title></head><body><p>The requested page does not exist.</p></body></html>
+    <?php
+    die();
 }
 
 return array(
-	'plugins' => array(
-		'relation' => 'OR',
-		'advanced-custom-fields/acf.php',
-		'advanced-custom-fields-pro/acf.php',
-	),
+    'plugins' => array(
+        'relation' => 'OR',
+        'advanced-custom-fields/acf.php',
+        'advanced-custom-fields-pro/acf.php',
+    ),
 );
 ```
 
@@ -123,17 +123,18 @@ Here is an example using the "AND" relation parameter:
 
 ```php
 return array(
-	'plugins' => array(
-		'relation' => 'AND',
-		'advanced-custom-fields/acf.php',
-		'gravityforms/gravityforms.php',
-		'post-smtp/postman-smtp.php',
-	),
+    'plugins' => array(
+        'relation' => 'AND',
+        'advanced-custom-fields/acf.php',
+        'gravityforms/gravityforms.php',
+        'post-smtp/postman-smtp.php',
+    ),
 );
 ```
 
 ## Roadmap
 
 1. Theme activation requirements.
-2. Load activation requirements from a file.
-3. Provide a configuration value that facilitates post-activation notices to the user.
+2. Provide a configuration value that facilitates post-activation notices to the user.
+3. Allow both 'AND' and 'OR' clauses to be declared in the configuration.
+4. Improve the error page content by including more plugin data parameters if available.
