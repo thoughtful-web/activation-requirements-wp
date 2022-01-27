@@ -5,11 +5,10 @@
  * Links to PHP core documentation are included but this file will not be easy to grasp for beginners.
  *
  * @package    ThoughtfulWeb\ActivationRequirementsWP
- * @subpackage Require
  * @author     Zachary Kendall Watkins <watkinza@gmail.com>
  * @copyright  Zachary Kendall Watkins 2022
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0-or-later
- * @link       https://github.com/thoughtful-web/pluginactivationwp/blob/master/src/Plugin.php
+ * @link       https://github.com/thoughtful-web/plugin-activation-wp/blob/master/src/Plugin.php
  * @since      0.1.0
  */
 
@@ -125,7 +124,8 @@ class Plugin {
 			$this->get_error_message(),
 			'Plugin Activation Error',
 			array(
-				'back_link' => true,
+				'link_text' => 'Go back to the plugins page',
+				'link_url'  => admin_url( 'plugins.php' ),
 			)
 		);
 
@@ -141,14 +141,22 @@ class Plugin {
 	public function get_error_message() {
 
 		$plugin_data = get_plugin_data( $this->root_plugin_path );
+		$plural      = '';
+		if (
+			$this->plugin_query_results['relation'] === 'AND'
+			&& count( $this->plugin_query_results['notify'] ) > 1
+		) {
+			$plural = 's';
+		};
 		$message_output = sprintf(
-			/* translators: %1$s: The name of the deactivated plugin. %2$s: Name or names of the plugins which did not meet requirements. */
-			__( '<h1>The %1$s plugin could not be activated.</h1><p>Install and activate the %2$s plugin(s) first.</p>', 'thoughtful-web-library-wp' ),
+			/* translators: %1$s: The name of the deactivated plugin. %2$s: Name or names of the plugins which did not meet requirements. %3$s: Plural suffix for the word "plugin" if the number of plugins is 2 or more. */
+			__( '<h1>%1$s could not be activated.</h1><p>Activate the %2$s plugin%3$s first.</p>', 'thoughtful-web-library-wp' ),
 			esc_html( $plugin_data['Name'] ),
-			esc_html( $this->plugin_query_results['message'] )
+			esc_html( $this->plugin_query_results['message'] ),
+			$plural
 		);
 
-		$message_output = apply_filters( 'twar_plugin_activation_error', $message_output );
+		$message_output = apply_filters( 'twar_plugin_activation_error', $message_output, $plugin_data['Name'], $this->plugin_query_results['message'], $this->plugin_query_results );
 
 		return $message_output;
 

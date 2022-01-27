@@ -2,7 +2,7 @@
 /**
  * The file that retrieves a configuration file if requested.
  *
- * @package    ThoughtfulWeb\SettingsPageWP
+ * @package    ThoughtfulWeb\ActivationRequirementsWP
  * @author     Zachary Kendall Watkins <watkinza@gmail.com>
  * @copyright  Zachary Kendall Watkins 2022
  * @license    https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0-or-later

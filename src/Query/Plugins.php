@@ -30,14 +30,7 @@ class Plugins {
 	 *
 	 * @var array $results The plugin query results.
 	 */
-	private $query_results = array(
-		'passed'   => true,
-		'results'  => array(),
-		'active'   => array(),
-		'inactive' => array(),
-		'notify'   => array(),
-		'message'  => '',
-	);
+	private $query_results = array();
 
 	/**
 	 * Class constructor.
@@ -63,7 +56,15 @@ class Plugins {
 	public function __construct( $plugin_clause ) {
 
 		// Results structure for this class's sole public function.
-		$results = $this->query_results;
+		$results = array(
+			'passed'   => true,
+			'relation' => '',
+			'results'  => array(),
+			'active'   => array(),
+			'inactive' => array(),
+			'notify'   => array(),
+			'message'  => '',
+		);
 
 		// Enforce a default value of 'AND' for $relation.
 		$relation = 'AND';
@@ -73,9 +74,13 @@ class Plugins {
 			}
 			unset( $plugin_clause['relation'] );
 		}
+		$results['relation'] = $relation;
 
 		// Get the active status of plugins.
-		$results['status'] = $this->get_active_status( $plugin_clause );
+		$plugin_status = $this->get_plugin_status( $plugin_clause );
+		$results['active']      = $plugin_status['active'];
+		$results['inactive']    = $plugin_status['inactive'];
+		$results['uninstalled'] = $plugin_status['uninstalled'];
 
 		// Determine if the currently active and inactive plugins meet the requirements configuration.
 		if ( 'AND' === $relation ) {
@@ -90,10 +95,14 @@ class Plugins {
 		} else {
 			$results['notify'] = 1 < count( $results['active'] ) ? $results['active'] : $results['inactive'];
 		}
+		if ( ! empty( $results['uninstalled'] ) ) {
+			$results['notify'] = array_merge( $results['notify'], $results['uninstalled'] );
+		}
 
 		/**
 		 * Assemble all inactive plugins as a phrase using the relation parameter.
 		 */
+		error_log(serialize($results));
 		if ( 0 < count( $results['notify'] ) ) {
 
 			$results['message'] = $this->phrase_plugin_names( $results['notify'], $relation );
@@ -104,22 +113,28 @@ class Plugins {
 	}
 
 	/**
-	 * Get the active status of an array of plugin basenames.
+	 * Get the status of an array of plugin basenames.
 	 *
 	 * @param string[] $plugin_basenames An array of plugin basenames.
 	 *
 	 * @return array
 	 */
-	private function get_active_status( $plugin_basenames ) {
+	private function get_plugin_status( $plugin_basenames ) {
 
 		$results = array(
-			'active'   => array(),
-			'inactive' => array(),
+			'active'      => array(),
+			'inactive'    => array(),
+			'uninstalled' => array(),
 		);
 
 		// Store plugin activation statuses.
 		foreach ( $plugin_basenames as $key => $plugin ) {
-			if ( is_plugin_active( $plugin ) ) {
+
+			$file_path = WP_PLUGIN_DIR . '/' . $plugin;
+
+			if ( ! file_exists( $file_path ) ) {
+				$results['uninstalled'][] = 'uninstalled "' . $plugin . '"';
+			} elseif ( is_plugin_active( $plugin ) ) {
 				$results['active'][] = $plugin;
 			} else {
 				$results['inactive'][] = $plugin;
@@ -173,8 +188,23 @@ class Plugins {
 		$plugin_names = array();
 
 		foreach ( $plugins as $plugin ) {
-			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
-			$plugin_names[] = $plugin['Name'];
+
+			$file_path   = WP_PLUGIN_DIR . '/' . $plugin;
+			$plugin_name = $plugin;
+
+			if ( file_exists( $file_path ) ) {
+
+				$plugin_data = get_plugin_data( $file_path );
+
+				if ( ! empty( $plugin_data['Name'] ) ) {
+
+					$plugin_name = $plugin_data['Name'];
+
+				}
+			}
+
+			$plugin_names[] = $plugin_name;
+
 		}
 
 		return $plugin_names;
