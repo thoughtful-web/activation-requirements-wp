@@ -148,7 +148,7 @@ class Plugin {
 			esc_html( $this->plugin_query_results['message'] )
 		);
 
-		$message_output = apply_filters( 'twar_activation_error', $message_output );
+		$message_output = apply_filters( 'twar_plugin_activation_error', $message_output );
 
 		return $message_output;
 
