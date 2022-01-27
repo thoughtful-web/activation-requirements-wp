@@ -30,7 +30,7 @@ class Config {
 	/**
 	 * Constructor for the Config class.
 	 *
-	 * @param array $config The configuration parameters. Either a configuration file string or an array.
+	 * @param array $config The configuration parameters. Either a configuration file name, file path, or array of configuration options.
 	 *
 	 * @return void
 	 */
