@@ -66,14 +66,14 @@ The simplest implementation of this library is to add a configuration file at (1
 
 ```php
 require __DIR__ . '/vendor/autoload.php;
-new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__ );
+new \ThoughtfulWeb\ActivationRequirementsWP\Plugin();
 ```
 
 [Back to top](#activation-requirements-for-wordpress)
 
 ## Implementation
 
-The first parameter of the class is an absolute file path to your plugin's root file. The second parameter is optional and is either a configuration file name, file path, or array. To load the Plugin class with (or without) a configuration parameter you should know the accepted values:
+The only parameter for the public-facing classes is optional and is either a configuration file name, file path, or array. To use the Plugin class with (or without) a configuration parameter you should know the accepted values:
 
 ```php
 @param array $config The configuration parameters. Either a configuration file name, file path, or array of configuration options.
@@ -82,15 +82,15 @@ The first parameter of the class is an absolute file path to your plugin's root 
 This library will load a file using an `include` statement if it is a PHP file or using `file_read_contents()` if it is a JSON file. Here is an explanation of the possible values for this parameter:
 
 1. The **"no parameter"** approach requires the configuration file to be here: `./config/thoughtful-web/activation-requirements.php`. Example:  
-   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__ );`  
+   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin();`  
 
 2. The **"file name"** approach accepts a PHP or JSON file name and requires the file to be in `./config/thoughtful-web/<file>`. Examples:  
-   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, 'filename.php' );`  
-   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, 'filename.json' );`  
+   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( 'filename.php' );`  
+   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( 'filename.json' );`  
 
 3. The **"file path"** approach allows the config file to be anywhere on your server where the `./src/Config.php` class file has read access. Examples:  
-   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, __DIR__ . '/config/filename.json' );`  
-   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, '/home/website/filename.php' );`  
+   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __DIR__ . '/config/filename.json' );`  
+   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( '/home/website/filename.php' );`  
 
 4. The **"array"** approach allows you to pass a PHP array containing the configuration values in their final state. Example:
 
@@ -102,7 +102,7 @@ $config = array(
 		'advanced-custom-fields-pro/acf.php',
 	),
 )
-new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, $config );
+new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( $config );
 ```
 
 ***Note:** Call the class as early as you can in your plugin's code for best performance. Also, you must either call the class without an action hook or within an action hook early enough in the execution order to not skip the WordPress actions, filters, and functions used in this library's class files. It is yet to be determined which action hooks are compatible with the class's instantiation.*

@@ -55,7 +55,6 @@ class Plugin {
 	 * @see   https://developer.wordpress.org/reference/functions/register_activation_hook/
 	 * @since 0.1.0
 	 *
-	 * @param string       $root_plugin_path     The main plugin file in the root directory of the plugin folder.
 	 * @param array|string $config {
 	 *     The details for plugins which may or may not be present and/or active on the site.
 	 *
@@ -72,7 +71,10 @@ class Plugin {
 	 *
 	 * @return void
 	 */
-	public function __construct( $root_plugin_path, $config = array() ) {
+	public function __construct( $config = array() ) {
+
+		$plugin_folder_name = basename( dirname( __FILE__, 5 ) );
+		$plugin_file        = get_plugins( "/{$plugin_folder_name}" );
 
 		$this->root_plugin_path = $root_plugin_path;
 
