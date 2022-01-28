@@ -25,6 +25,11 @@ use \ThoughtfulWeb\ActivationRequirementsWP\Config;
  */
 class Plugin {
 
+	/**
+	 * The root plugin file path relative to the server root.
+	 *
+	 * @var root_plugin_path
+	 */
 	private $root_plugin_path;
 
 	/**
@@ -51,7 +56,7 @@ class Plugin {
 	 * @since 0.1.0
 	 *
 	 * @param string       $root_plugin_path     The main plugin file in the root directory of the plugin folder.
-	 * @param array|string $plugin_clause {
+	 * @param array|string $config {
 	 *     The details for plugins which may or may not be present and/or active on the site.
 	 *
 	 *     @type string $relation Optional. The keyword used to compare the activation status of the
@@ -72,8 +77,8 @@ class Plugin {
 		$this->root_plugin_path = $root_plugin_path;
 
 		// Store attributes from the compiled parameters.
-		$config_obj = new \ThoughtfulWeb\ActivationRequirementsWP\Config( $config );
-		$this->plugin_clause = $config_obj->get('plugins');
+		$config_obj          = new \ThoughtfulWeb\ActivationRequirementsWP\Config( $config );
+		$this->plugin_clause = $config_obj->get( 'plugins' );
 		// Register activation hook.
 		register_activation_hook( $root_plugin_path, array( $this, 'activate_plugin' ) );
 
@@ -121,11 +126,11 @@ class Plugin {
 			deactivate_plugins( $plugin_base, false, false );
 		}
 		wp_die(
-			$this->get_error_message(),
+			wp_kses_post( $this->get_error_message() ),
 			'Plugin Activation Error',
 			array(
 				'link_text' => 'Go back to the plugins page',
-				'link_url'  => admin_url( 'plugins.php' ),
+				'link_url'  => esc_url( admin_url( 'plugins.php' ) ),
 			)
 		);
 
@@ -136,14 +141,14 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function get_error_message() {
 
 		$plugin_data = get_plugin_data( $this->root_plugin_path );
 		$plural      = '';
 		if (
-			$this->plugin_query_results['relation'] === 'AND'
+			'AND' === $this->plugin_query_results['relation']
 			&& count( $this->plugin_query_results['notify'] ) > 1
 		) {
 			$plural = 's';
