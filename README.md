@@ -62,18 +62,18 @@ To install this module from Github using Composer, add it as a repository to the
 
 ## Simplest Implementation
 
-The simplest implementation of this library is to add a configuration file at (1) `./config/thoughtful-web/activation-requirements.php` or (2) `./config/thoughtful-web/activation-requirements.json`. Then use Composer's autoloader and the main class file without a parameter. It should look like this:  
+The simplest implementation of this library is to add a configuration file at (1) `./config/thoughtful-web/activation-requirements.php` or (2) `./config/thoughtful-web/activation-requirements.json`. Then use Composer's autoloader and the main class file from within your plugin's root file. It should look like this:  
 
 ```php
 require __DIR__ . '/vendor/autoload.php;
-new \ThoughtfulWeb\ActivationRequirementsWP\Plugin();
+new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__ );
 ```
 
 [Back to top](#activation-requirements-for-wordpress)
 
 ## Implementation
 
-To load the Plugin class with (or without) a configuration parameter you should know the accepted values:
+The first parameter of the class is an absolute file path to your plugin's root file. The second parameter is optional and is either a configuration file name, file path, or array. To load the Plugin class with (or without) a configuration parameter you should know the accepted values:
 
 ```php
 @param array $config The configuration parameters. Either a configuration file name, file path, or array of configuration options.
@@ -82,15 +82,15 @@ To load the Plugin class with (or without) a configuration parameter you should 
 This library will load a file using an `include` statement if it is a PHP file or using `file_read_contents()` if it is a JSON file. Here is an explanation of the possible values for this parameter:
 
 1. The **"no parameter"** approach requires the configuration file to be here: `./config/thoughtful-web/activation-requirements.php`. Example:  
-   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin();`  
+   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__ );`  
 
 2. The **"file name"** approach accepts a PHP or JSON file name and requires the file to be in `./config/thoughtful-web/<file>`. Examples:  
-   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( 'filename.php' );`  
-   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( 'filename.json' );`  
+   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, 'filename.php' );`  
+   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, 'filename.json' );`  
 
 3. The **"file path"** approach allows the config file to be anywhere on your server where the `./src/Config.php` class file has read access. Examples:  
-   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __DIR__ . '/config/filename.json' );`  
-   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( '/home/website/filename.php' );`  
+   a. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, __DIR__ . '/config/filename.json' );`  
+   b. `new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, '/home/website/filename.php' );`  
 
 4. The **"array"** approach allows you to pass a PHP array containing the configuration values in their final state. Example:
 
@@ -102,7 +102,7 @@ $config = array(
 		'advanced-custom-fields-pro/acf.php',
 	),
 )
-new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( $config );
+new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( __FILE__, $config );
 ```
 
 ***Note:** Call the class as early as you can in your plugin's code for best performance. Also, you must either call the class without an action hook or within an action hook early enough in the execution order to not skip the WordPress actions, filters, and functions used in this library's class files. It is yet to be determined which action hooks are compatible with the class's instantiation.*
@@ -163,11 +163,11 @@ return array(
 
 These are changes that I am either considering or will seek to implement.
 
-1. Confirm support for themes to use this library.
+1. Add a Theme top-level class that mimics the Plugin class but uses Theme hooks like the action hook `after_switch_theme`.
 2. Add a "themes" parameter to the configuration array to check for the active theme or the presence of a parent theme.
 3. Provide a configuration value that facilitates post-activation notices to the user.
-4. Allow both 'AND' and 'OR' clauses to be declared in the configuration.
-5. Improve the error page content by including more plugin data parameters if available.
+4. Consider improving the error page content by including more plugin data parameters if available.
+5. Allow both 'AND' and 'OR' clauses to be declared at the same time in the configuration.
 
 [Back to top](#activation-requirements-for-wordpress)
 
