@@ -14,11 +14,14 @@ This library trivializes requiring other plugins to be activated before your plu
 4. [Implementation](#implementation)
 5. [Creating the Config File](#creating-the-config-file)
 6. [Roadmap](#roadmap)
+7. [Development Requirements, Installation, and Notes](#development-requirements-installation-and-notes)
 
 ## Features
 
 1. Declare plugin requirements in a configuration file and automatically enforce these requirements during the plugin's activation phase.
 2. Format a helpful message using `wp_die()` ([*link to official documentation*](https://developer.wordpress.org/reference/functions/wp_die/)) to indicate which plugin(s) need to be installed and/or activated in order to successfully activate your plugin.
+
+[Back to top](#activation-requirements-for-wordpress)
 
 ## Requirements
 
@@ -28,6 +31,8 @@ This library trivializes requiring other plugins to be activated before your plu
    a. `vendor/thoughtful-web/activation-requirements-wp`  
    b. `lib/thoughtful-web/activation-requirements-wp`  
 4. A configuration file or PHP array (*see [Creating the Config File](#creating-the-config-file)*)
+
+[Back to top](#activation-requirements-for-wordpress)
 
 ## Installation
 
@@ -53,6 +58,8 @@ To install this module from Github using Composer, add it as a repository to the
 }
 ```
 
+[Back to top](#activation-requirements-for-wordpress)
+
 ## Simplest Implementation
 
 The simplest implementation of this library is to add a configuration file at (1) `./config/thoughtful-web/activation-requirements.php` or (2) `./config/thoughtful-web/activation-requirements.json`. Then use Composer's autoloader and the main class file without a parameter. It should look like this:  
@@ -61,6 +68,8 @@ The simplest implementation of this library is to add a configuration file at (1
 require __DIR__ . '/vendor/autoload.php;
 new \ThoughtfulWeb\ActivationRequirementsWP\Plugin();
 ```
+
+[Back to top](#activation-requirements-for-wordpress)
 
 ## Implementation
 
@@ -97,6 +106,8 @@ new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( $config );
 ```
 
 ***Note:** Call the class as early as you can in your plugin's code for best performance. Also, you must either call the class without an action hook or within an action hook early enough in the execution order to not skip the WordPress actions, filters, and functions used in this library's class files. It is yet to be determined which action hooks are compatible with the class's instantiation.*
+
+[Back to top](#activation-requirements-for-wordpress)
 
 ## Creating the Config File
 
@@ -146,6 +157,8 @@ return array(
 );
 ```
 
+[Back to top](#activation-requirements-for-wordpress)
+
 ## Roadmap
 
 These are changes that I am either considering or will seek to implement.
@@ -155,3 +168,114 @@ These are changes that I am either considering or will seek to implement.
 3. Provide a configuration value that facilitates post-activation notices to the user.
 4. Allow both 'AND' and 'OR' clauses to be declared in the configuration.
 5. Improve the error page content by including more plugin data parameters if available.
+
+[Back to top](#activation-requirements-for-wordpress)
+
+## Development Requirements, Installation, and Notes
+
+### Requirements
+
+1. PHP 7.3.5+
+2. The Composer package manager tool. [Get Composer](https://getcomposer.org/)
+3. The PHP Codesniffer Composer module.  
+   a. `$ composer global require squizlabs/php_codesniffer`
+4. The [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/) ruleset.  
+   a. `$ composer global require wp-coding-standards/wpcs`  
+   b. `$ phpcs --config-set installed_paths $HOME/AppData/Roaming/Composer/vendor/wp-coding-standards/wpcs`  
+
+### Installation
+
+Run the following commands in your command line interface wherever you plan to install the library. If you are installing the library in this manner, you will typically do so within a directory like `my-wordpress-plugin/inc/thoughtful-web/`. The git hooks currently only automate creating a zip file using the latest tag after pushing changes to the repository's main branch, and only for Windows users since it runs a *.ps1 file.
+
+1. `$ git clone https://github.com/thoughtful-web/activation-requirements-wp`
+2. `$ cd activation-requirements-wp`
+3. `$ composer install`
+4. `$ git config core.hooksPath hooks`
+5. If using Visual Studio Code I recommend these additional steps:  
+   a. Install these extensions: "PHP Intelephense by Ben Mewburn" and "phpcs by Ioannis Kappas"   
+   b. Include these key values with your Visual Studio Code workspace's settings file:
+```json
+{
+    "phpcs.standard": "WordPress",
+	"intelephense.stubs": [
+		"wordpress",
+		"apache",
+		"bcmath",
+		"bz2",
+		"calendar",
+		"com_dotnet",
+		"Core",
+		"ctype",
+		"curl",
+		"date",
+		"dba",
+		"dom",
+		"enchant",
+		"exif",
+		"FFI",
+		"fileinfo",
+		"filter",
+		"fpm",
+		"ftp",
+		"gd",
+		"gettext",
+		"gmp",
+		"hash",
+		"iconv",
+		"imap",
+		"intl",
+		"json",
+		"ldap",
+		"libxml",
+		"mbstring",
+		"meta",
+		"mysqli",
+		"oci8",
+		"odbc",
+		"openssl",
+		"pcntl",
+		"pcre",
+		"PDO",
+		"pdo_ibm",
+		"pdo_mysql",
+		"pdo_pgsql",
+		"pdo_sqlite",
+		"pgsql",
+		"Phar",
+		"posix",
+		"pspell",
+		"readline",
+		"Reflection",
+		"session",
+		"shmop",
+		"SimpleXML",
+		"snmp",
+		"soap",
+		"sockets",
+		"sodium",
+		"SPL",
+		"sqlite3",
+		"standard",
+		"superglobals",
+		"sysvmsg",
+		"sysvsem",
+		"sysvshm",
+		"tidy",
+		"tokenizer",
+		"xml",
+		"xmlreader",
+		"xmlrpc",
+		"xmlwriter",
+		"xsl",
+		"Zend OPcache",
+		"zip",
+		"zlib"
+	]
+}
+```
+### Notes
+
+1. This repository uses a modified version of the [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/) to allow PSR-4 compliant class file names.
+2. To add a new git hook file, run `$ git add --chmod=+x hooks/<hook-file-name> && git commit -m "Add git hook"`.
+
+[Back to top](#activation-requirements-for-wordpress)
