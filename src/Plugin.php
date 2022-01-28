@@ -8,7 +8,7 @@
  * @author     Zachary Kendall Watkins <watkinza@gmail.com>
  * @copyright  Zachary Kendall Watkins 2022
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0-or-later
- * @link       https://github.com/thoughtful-web/plugin-activation-wp/blob/master/src/Plugin.php
+ * @link       https://github.com/thoughtful-web/activation-requirements-wp/blob/master/src/Plugin.php
  * @since      0.1.0
  */
 
