@@ -70,7 +70,10 @@ class Config {
 			if ( file_exists( $file_path ) ) {
 				if ( $is_json ) {
 					if ( is_readable( $file_path ) ) {
-						$str = WP_Filesystem_Direct::get_contents( $file_path );
+						require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+						require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+						$filesystem = new \WP_Filesystem_Direct( true );
+						$str        = $filesystem->get_contents( $file_path );
 						if ( ! empty( $str ) ) {
 							$config = json_decode( $str, true );
 						}
