@@ -69,8 +69,13 @@ class Config {
 			$file_path = "{$file_path_pre}{$config}";
 			if ( file_exists( $file_path ) ) {
 				if ( $is_json ) {
-					$str    = file_get_contents( $file_path );
-					$config = json_decode( $str, true );
+					if ( is_readable( $file_path ) ) {
+						global $wp_filesystem;
+						$str = $wp_filesystem->get_contents( $file_path );
+						if ( ! empty( $str ) ) {
+							$config = json_decode( $str, true );
+						}
+					}
 				} else {
 					$config = include $file_path;
 				}
