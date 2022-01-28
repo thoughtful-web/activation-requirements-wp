@@ -70,8 +70,7 @@ class Config {
 			if ( file_exists( $file_path ) ) {
 				if ( $is_json ) {
 					if ( is_readable( $file_path ) ) {
-						global $wp_filesystem;
-						$str = $wp_filesystem->get_contents( $file_path );
+						$str = WP_Filesystem_Direct::get_contents( $file_path );
 						if ( ! empty( $str ) ) {
 							$config = json_decode( $str, true );
 						}
