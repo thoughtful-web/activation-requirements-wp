@@ -51,7 +51,7 @@ class Plugins {
 	 *     }
 	 * }
 	 *
-	 * @return array
+	 * @return void
 	 */
 	public function __construct( $plugin_clause ) {
 
@@ -77,7 +77,7 @@ class Plugins {
 		$results['relation'] = $relation;
 
 		// Get the active status of plugins.
-		$plugin_status = $this->get_plugin_status( $plugin_clause );
+		$plugin_status          = $this->get_plugin_status( $plugin_clause );
 		$results['active']      = $plugin_status['active'];
 		$results['inactive']    = $plugin_status['inactive'];
 		$results['uninstalled'] = $plugin_status['uninstalled'];
@@ -102,7 +102,6 @@ class Plugins {
 		/**
 		 * Assemble all inactive plugins as a phrase using the relation parameter.
 		 */
-		error_log(serialize($results));
 		if ( 0 < count( $results['notify'] ) ) {
 
 			$results['message'] = $this->phrase_plugin_names( $results['notify'], $relation );
@@ -155,7 +154,7 @@ class Plugins {
 	 * Example 5: "Advanced Custom Fields, Admin Columns, or Gravity Forms"
 	 *
 	 * @param string[] $plugin_files The relative plugin file paths to convert into names.
-	 * @param string   $relation    The relationship between the plugins. Default: AND
+	 * @param string   $relation    The relationship between the plugins. Default: AND.
 	 * @return string
 	 */
 	private function phrase_plugin_names( $plugin_files, $relation = 'AND' ) {
@@ -167,9 +166,9 @@ class Plugins {
 		if ( 2 >= $plural ) {
 			$message = implode( strtolower( " $relation " ), $plugin_names );
 		} else {
-			$plugin_last  = array_pop( $plugin_names );
-			$message      = implode( ', ', $plugin_names );
-			$message     .= strtolower( ", $relation " ) . $plugin_last;
+			$plugin_last = array_pop( $plugin_names );
+			$message     = implode( ', ', $plugin_names );
+			$message    .= strtolower( ", $relation " ) . $plugin_last;
 		}
 
 		return $message;
