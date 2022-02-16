@@ -73,6 +73,11 @@ class Plugin {
 	 */
 	public function __construct( $config = array() ) {
 
+		// Check if get_plugins() function exists. This is required on the front end of the
+		// site, since it is in a file that is normally only loaded in the admin.
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
 		$plugin_folder_name = basename( dirname( __FILE__, 5 ) );
 		$plugin_file        = get_plugins( "/{$plugin_folder_name}" );
 

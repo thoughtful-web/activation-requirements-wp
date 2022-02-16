@@ -1,4 +1,4 @@
-# Activation Requirements for WordPress
+# Activation Requirements for WordPress Plugins
 
 >Free open source software under the GNU GPL-2.0+ License.  
 >Copyright Zachary Kendall Watkins 2022.  
@@ -21,7 +21,7 @@ This library trivializes requiring other plugins to be activated before your plu
 1. Declare plugin requirements in a configuration file and automatically enforce these requirements during the plugin's activation phase.
 2. Format a helpful message using `wp_die()` ([*link to official documentation*](https://developer.wordpress.org/reference/functions/wp_die/)) to indicate which plugin(s) need to be installed and/or activated in order to successfully activate your plugin.
 
-[Back to top](#activation-requirements-for-wordpress)
+[Back to top](#activation-requirements-for-wordpress-plugins)
 
 ## Requirements
 
@@ -32,7 +32,7 @@ This library trivializes requiring other plugins to be activated before your plu
    b. `lib/thoughtful-web/activation-requirements-wp`  
 4. A configuration file or PHP array (*see [Creating the Config File](#creating-the-config-file)*)
 
-[Back to top](#activation-requirements-for-wordpress)
+[Back to top](#activation-requirements-for-wordpress-plugins)
 
 ## Installation
 
@@ -42,7 +42,7 @@ To install this module from Composer directly, use the command line. Then either
 
 To install this module from Github using Composer, add it as a repository to the composer.json file:
 
-```
+```json
 {
     "name": "zachwatkins/wordpress-plugin-name",
     "description": "WordPress plugin boilerplate using best practices, tools, and commonly needed modules.",
@@ -58,7 +58,7 @@ To install this module from Github using Composer, add it as a repository to the
 }
 ```
 
-[Back to top](#activation-requirements-for-wordpress)
+[Back to top](#activation-requirements-for-wordpress-plugins)
 
 ## Simplest Implementation
 
@@ -69,7 +69,7 @@ require __DIR__ . '/vendor/autoload.php;
 new \ThoughtfulWeb\ActivationRequirementsWP\Plugin();
 ```
 
-[Back to top](#activation-requirements-for-wordpress)
+[Back to top](#activation-requirements-for-wordpress-plugins)
 
 ## Implementation
 
@@ -107,7 +107,7 @@ new \ThoughtfulWeb\ActivationRequirementsWP\Plugin( $config );
 
 ***Note:** Call the class as early as you can in your plugin's code for best performance. Also, you must either call the class without an action hook or within an action hook early enough in the execution order to not skip the WordPress actions, filters, and functions used in this library's class files. It is yet to be determined which action hooks are compatible with the class's instantiation.*
 
-[Back to top](#activation-requirements-for-wordpress)
+[Back to top](#activation-requirements-for-wordpress-plugins)
 
 ## Creating the Config File
 
@@ -157,7 +157,7 @@ return array(
 );
 ```
 
-[Back to top](#activation-requirements-for-wordpress)
+[Back to top](#activation-requirements-for-wordpress-plugins)
 
 ## Roadmap
 
@@ -168,8 +168,8 @@ These are changes that I am either considering or will seek to implement.
 3. Provide a configuration value that facilitates post-activation notices to the user.
 4. Consider improving the error page content by including more plugin data parameters if available.
 5. Allow both 'AND' and 'OR' clauses to be declared at the same time in the configuration.
-
-[Back to top](#activation-requirements-for-wordpress)
+e
+[Back to top](#activation-requirements-for-wordpress-plugins)
 
 ## Development Requirements, Installation, and Notes
 
@@ -278,4 +278,4 @@ Run the following commands in your command line interface wherever you plan to i
 1. This repository uses a modified version of the [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/) to allow PSR-4 compliant class file names.
 2. To add a new git hook file, run `$ git add --chmod=+x hooks/<hook-file-name> && git commit -m "Add git hook"`.
 
-[Back to top](#activation-requirements-for-wordpress)
+[Back to top](#activation-requirements-for-wordpress-plugins)
