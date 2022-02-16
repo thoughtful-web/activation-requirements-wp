@@ -79,15 +79,20 @@ class Plugin {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		$plugin_folder_name = basename( dirname( __FILE__, 5 ) );
-		$plugin_file        = get_plugins( "/{$plugin_folder_name}" );
-
-		$this->root_plugin_path = $root_plugin_path;
+		$plugin_files       = get_plugins( "/{$plugin_folder_name}" );
+		if ( empty( $plugin_files ) ) {
+			return;
+		}
+	
+		// The plugin's root file was found.
+		$file_name = array_key_first( $plugin_files );
+		$this->root_plugin_path = "{$plugin_folder_name}/{$file_name}";
 
 		// Store attributes from the compiled parameters.
 		$config_obj          = new \ThoughtfulWeb\ActivationRequirementsWP\Config( $config );
 		$this->plugin_clause = $config_obj->get( 'plugins' );
 		// Register activation hook.
-		register_activation_hook( $root_plugin_path, array( $this, 'activate_plugin' ) );
+		register_activation_hook( $this->root_plugin_path, array( $this, 'activate_plugin' ) );
 
 	}
 
