@@ -1,44 +1,75 @@
 {
-    "name": "thoughtful-web/activation-requirements-wp",
-    "description": "Helpful WordPress activation requirements released as free open source software under GNU GPL-2.0+ License",
-    "type": "library",
-	"keywords": ["wordpress", "plugin", "activation"],
-	"require": {
-		"php": ">=7.3.5"
+	"name": "thoughtful-web/activation-requirements-wp",
+	"description": "PHP library to simplify activation requirements for WordPress plugins and themes. Released as free open source software under GNU GPL-2.0+ License",
+	"homepage": "https://packagist.org/packages/thoughtful-web/activation-requirements-wp",
+	"type": "library",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"wordpress",
+		"plugin",
+		"activation"
+	],
+	"support": {
+		"issues": "https://github.com/thoughtful-web/activation-requirements-wp/issues",
+		"source": "https://github.com/thoughtful-web/activation-requirements-wp/",
+		"docs": "https://raw.githubusercontent.com/thoughtful-web/activation-requirements-wp/main/README.md"
 	},
-    "license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Zachary Kendall Watkins",
+			"email": "zwatkins.it@gmail.com",
+			"homepage": "https://zachwatkins.dev/",
+			"role": "Creator"
+		},
+		{
+			"name": "Contributors",
+			"homepage": "https://github.com/thoughtful-web/activation-requirements-wp/graphs/contributors"
+		}
+	],
+	"readme": "README.md",
+	"autoload": {
+		"psr-4": {
+			"ThoughtfulWeb\\ActivationRequirementsWP\\": "src/"
+		}
+	},
 	"repositories": [
 		{
 			"type": "vcs",
 			"url": "https://github.com/thoughtful-web/activation-requirements-wp"
 		}
 	],
-    "authors": [
-        {
-            "name": "Zachary Kendall Watkins",
-            "email": "watkinza@gmail.com",
-			"homepage": "https://github.com/zachwatkins/",
-            "role": "Creator"
-        },
-		{
-			"name"    : "Contributors",
-			"homepage": "https://github.com/thoughtful-web/activation-requirements-wp/graphs/contributors"
-		}
-    ],
-	"support": {
-		"issues": "https://github.com/thoughtful-web/activation-requirements-wp/issues",
-		"source": "https://github.com/thoughtful-web/activation-requirements-wp/",
-		"docs": "https://raw.githubusercontent.com/thoughtful-web/activation-requirements-wp/main/README.md"
+	"require": {
+		"php": ">=7.3.5"
 	},
-	"readme": "README.md",
-	"autoload": {
-        "psr-4": {
-			"ThoughtfulWeb\\ActivationRequirementsWP\\": "src/"
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+		"squizlabs/php_codesniffer": "^3.6",
+		"wp-coding-standards/wpcs": "^2.3"
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"preferred-install": "dist",
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	},
-	"scripts": {},
-    "require-dev": {
-        "squizlabs/php_codesniffer": "^3.6",
-        "wp-coding-standards/wpcs": "^2.3"
-    }
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"scripts": {
+		"config-wpcs": [
+			"./vendor/bin/phpcs --config-set default_standard WordPress",
+			"./vendor/bin/phpcs --config-set report_format source",
+			"./vendor/bin/phpcs --config-set colors 1"
+		],
+		"install-codestandards": [
+			"Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+		],
+		"format": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcbf --ignore=vendor,node_modules",
+		"format:all": "@format .",
+		"format:modified": "@format --filter=gitmodified",
+		"lint": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs --ignore=vendor,node_modules",
+		"lint:all": "@lint .",
+		"lint:errors": "@lint -n",
+		"lint:modified": "@lint --filter=gitmodified"
+	}
 }
