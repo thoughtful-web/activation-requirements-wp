@@ -83,9 +83,9 @@ class Plugin {
 		if ( empty( $plugin_files ) ) {
 			return;
 		}
-	
+
 		// The plugin's root file was found.
-		$file_name = array_key_first( $plugin_files );
+		$file_name              = array_key_first( $plugin_files );
 		$this->root_plugin_path = "{$plugin_folder_name}/{$file_name}";
 
 		// Store attributes from the compiled parameters.
